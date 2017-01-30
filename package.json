@@ -1,0 +1,39 @@
+{
+  "name": "asn-bot",
+  "version": "0.1.0",
+  "description": "Slackbot for Association Sans Nom",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/pandark/asn-bot.git"
+  },
+  "keywords": [
+    "asn",
+    "association",
+    "42",
+    "security",
+    "free",
+    "libre",
+    "open",
+    "lockpicking",
+    "bot",
+    "slack",
+    "slackbot",
+    "born2code",
+    "borntocode"
+  ],
+  "author": "Adrien \"Pandark\" Pachkoff",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/pandark/asn-bot/issues"
+  },
+  "homepage": "https://github.com/pandark/asn-bot#readme",
+  "dependencies": {
+    "node-env-file": "0.1.x",
+    "slack": "8.x"
+  },
+  "devDependencies": {}
+}
