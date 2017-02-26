@@ -1,30 +1,15 @@
 var slack = require('slack')
 var bot = slack.rtm.client()
 var env = require('node-env-file')
+var channels = require('./channels')
+var admins = require('./admins')
 
 env(__dirname + '/.env')
 var token = process.env.SLACK_TOKEN
 
-var channels = [
-  {id: 'C039P7U6E', always: true,  name: 'annonce'},
-  {id: 'C3T7LJB1S', always: true,  name: 'asn-libre'},
-  {id: 'C3SDZFG8Y', always: true,  name: 'asn-lockpicking'},
-  {id: 'C3SES169F', always: true,  name: 'asn-secu'},
-  {id: 'C3QG85SG6', always: false, name: 'general'}
-]
-
-var admins = [
-  {id: 'U0GQXP468', overlord: true,  name: 'pk'},
-  {id: 'U0FSDKUSZ', overlord: false, name: 'dbourdon'},
-  {id: 'U2JEH63RB', overlord: false, name: 'lbenamer'},
-  {id: 'U0BS3SQAC', overlord: false, name: 'tet'},
-  {id: 'U047JPZG0', overlord: false, name: 'sle-guil'},
-  {id: 'U3T4Q0J0P', overlord: false, name: 'el_famoso_sneaky'}
-]
-
 // auto rejoin
 bot.channel_left(function(msg) {
-  var toJoin = channels.find((chan) => {
+  var toJoin = channels.whitelist.find((chan) => {
     return chan.id === msg.channel && chan.always
   })
   if (toJoin !== undefined) {
@@ -39,7 +24,7 @@ bot.channel_left(function(msg) {
 
 // auto leave
 bot.channel_joined(function(msg) {
-  if (channels.find((chan) => {
+  if (channels.whitelist.find((chan) => {
     return chan.id === msg.channel.id
   }) === undefined) {
     slack.channels.leave(
