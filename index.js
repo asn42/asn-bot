@@ -49,7 +49,7 @@ function cmd_admins(from, to) {
 }
 
 // list commands
-function cmd_commands(from, to) {
+function cmd_help(from, to) {
   var text = '<@' + from + '>: ' +
     '`!command[s]`,`!help`, \n' +
     '`!admin[s]`, \n' +
@@ -60,7 +60,7 @@ function cmd_commands(from, to) {
     '`!annonces <message>`'
   slack.chat.postMessage(
     {token: token, as_user: true, channel: to, text: text}, (err, data) => {
-      if (data) { console.log(`cmd_commands from ${from} to ${to}`) }
+      if (data) { console.log(`cmd_help from ${from} to ${to}`) }
       if (err) { console.log(err) }
     }
   )
@@ -99,7 +99,7 @@ bot.message(function(msg) {
       cmd_admins(from.name, msg.channel)
     }
     if (msg.text.startsWith('!command') || msg.text.startsWith('!help')) {
-      cmd_commands(from.name, msg.channel)
+      cmd_help(from.name, msg.channel)
     }
     if (msg.text.startsWith('!time') || msg.text.startsWith('!date')) {
       cmd_time(from.name, msg.channel)
