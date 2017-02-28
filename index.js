@@ -56,16 +56,23 @@ commands.push({
   + 'Options: `add`/`remove` + nick to add or remove an admin.'
 })
 
-// list commands
+// list commands and print help messages
 function cmd_help(arg) {
-  var text = '<@' + arg.from + '>: ' +
-    '`!command[s]`,`!help`, \n' +
-    '`!admin[s]`, \n' +
-    '`!time`,`!date`, \n' +
-    '`!libre <message>`, \n' +
-    '`!lockpicking <message>`, \n' +
-    '`!secu <message>`, \n' +
-    '`!annonces <message>`'
+  var text = '<@' + arg.from + '>: '
+  if (arg.message === undefined) {
+    text += commands.map((command) => {
+      return command.names.join(', ')
+    }).join('\n')
+  } else {
+    var cmd = commands.find((command) => {
+      return command.names.includes(arg.cmd)
+    })
+    if (cmd !== undefined) {
+      text += cmd.names.join(', ') + '\n' + cmd.description
+    } else {
+      text += 'Command not recognized.'
+    }
+  }
   slack.chat.postMessage(
     {token: token, as_user: true, channel: arg.in, text: text}, (err, data) => {
       if (data) { console.log(`cmd_help from ${arg.from} to ${arg.in}`) }
