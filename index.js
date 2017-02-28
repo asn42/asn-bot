@@ -117,7 +117,7 @@ commands.push({
   func: cmd_announce,
   names: ['!annonces', '!libre', '!lockpicking', '!secu'],
   description: 'Annoncement on the specified channel '
-  + '(#annonces, #libre, #lockpicking or #secu) '
+  + '(#annonces, #asn-libre, #asn-lockpicking or #asn-secu) '
   + 'with your nick at the end of the message.'
 })
 
