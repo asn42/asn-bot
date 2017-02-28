@@ -65,7 +65,7 @@ function cmd_help(arg) {
     }).join('\n')
   } else {
     var cmd = commands.find((command) => {
-      return command.names.includes(arg.cmd)
+      return command.names.includes(arg.name)
     })
     if (cmd !== undefined) {
       text += cmd.names.join(', ') + '\n' + cmd.description
