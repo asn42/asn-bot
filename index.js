@@ -37,20 +37,20 @@ bot.channel_joined(function(msg) {
 })
 
 // list admins
-function cmd_admins(from, to) {
-  var text = '<@' + from + '>: ' +
+function cmd_admins(arg) {
+  var text = '<@' + arg.from + '>: ' +
     admins.reduce((str, user) => {return str + '<@' + user.name + '>\n'}, '')
   slack.chat.postMessage(
-    {token: token, as_user: true, channel: to, text: text}, (err, data) => {
-      if (data) { console.log(`cmd_admins from ${from} to ${to}`) }
+    {token: token, as_user: true, channel: arg.to, text: text}, (err, data) => {
+      if (data) { console.log(`cmd_admins from ${arg.from} to ${arg.to}`) }
       if (err) { console.log(err) }
     }
   )
 }
 
 // list commands
-function cmd_help(from, to) {
-  var text = '<@' + from + '>: ' +
+function cmd_help(arg) {
+  var text = '<@' + arg.from + '>: ' +
     '`!command[s]`,`!help`, \n' +
     '`!admin[s]`, \n' +
     '`!time`,`!date`, \n' +
@@ -59,31 +59,31 @@ function cmd_help(from, to) {
     '`!secu <message>`, \n' +
     '`!annonces <message>`'
   slack.chat.postMessage(
-    {token: token, as_user: true, channel: to, text: text}, (err, data) => {
-      if (data) { console.log(`cmd_help from ${from} to ${to}`) }
+    {token: token, as_user: true, channel: arg.to, text: text}, (err, data) => {
+      if (data) { console.log(`cmd_help from ${arg.from} to ${arg.to}`) }
       if (err) { console.log(err) }
     }
   )
 }
 
 // tell time and date
-function cmd_time(from, to) {
+function cmd_time(arg) {
   var now = new Date()
-  var text = `<@${from}>: ${now.toDateString()} ${now.toTimeString()}`
+  var text = `<@${arg.from}>: ${now.toDateString()} ${now.toTimeString()}`
   slack.chat.postMessage(
-    {token: token, as_user: true, channel: to, text: text}, (err, data) => {
-      if (data) { console.log(`cmd_time from ${from} to ${to}`) }
+    {token: token, as_user: true, channel: arg.to, text: text}, (err, data) => {
+      if (data) { console.log(`cmd_time from ${arg.from} to ${arg.to}`) }
       if (err) { console.log(err) }
     }
   )
 }
 
 // repeat with @channel
-function cmd_announce(from, to, message) {
-  var text = `<!channel>: ${message}\n(<@${from}>)`
+function cmd_announce(arg) {
+  var text = `<!channel>: ${arg.message}\n(<@${arg.from}>)`
   slack.chat.postMessage(
-    {token: token, as_user: true, channel: to, text: text}, (err, data) => {
-      if (data) { console.log(`cmd_announce to ${to}\n${text}`) }
+    {token: token, as_user: true, channel: arg.to, text: text}, (err, data) => {
+      if (data) { console.log(`cmd_announce to ${arg.to}\n${text}`) }
       if (err) { console.log(err) }
     }
   )
@@ -96,25 +96,25 @@ bot.message(function(msg) {
   })
   if (from !== undefined) {
     if (msg.text.startsWith('!admin')) {
-      cmd_admins(from.name, msg.channel)
+      cmd_admins({from: from.name, to: msg.channel})
     }
     if (msg.text.startsWith('!command') || msg.text.startsWith('!help')) {
-      cmd_help(from.name, msg.channel)
+      cmd_help({from: from.name, to: msg.channel})
     }
     if (msg.text.startsWith('!time') || msg.text.startsWith('!date')) {
-      cmd_time(from.name, msg.channel)
+      cmd_time({from: from.name, to: msg.channel})
     }
     if (msg.text.startsWith('!secu ')) {
-      cmd_announce(from.name, '#asn-secu', msg.text.slice(6))
+      cmd_announce({from: from.name, to: '#asn-secu', message: msg.text.slice(6)})
     }
     if (msg.text.startsWith('!lockpicking ')) {
-      cmd_announce(from.name, '#asn-lockpicking', msg.text.slice(13))
+      cmd_announce({from: from.name, to: '#asn-lockpicking', message: msg.text.slice(13)})
     }
     if (msg.text.startsWith('!libre ')) {
-      cmd_announce(from.name, '#asn-libre', msg.text.slice(7))
+      cmd_announce({from: from.name, to: '#asn-libre', message: msg.text.slice(7)})
     }
     if (msg.text.startsWith('!annonces ')) {
-      cmd_announce(from.name, '#annonces', msg.text.slice(6))
+      cmd_announce({from: from.name, to: '#annonces', message: msg.text.slice(6)})
     }
   }
 })
