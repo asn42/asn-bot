@@ -122,7 +122,7 @@ commands.push({
 })
 
 // commands
-bot.message(function(msg) {
+function onMessage(msg) {
   var from = admins.find((user) => {
     return user.id === msg.user
   })
@@ -148,6 +148,14 @@ bot.message(function(msg) {
     if (msg.text.startsWith('!annonces ')) {
       cmd_announce({name: '!annonces', from: {name: from.name}, to: '#annonces', message: msg.text.slice(6)})
     }
+  }
+}
+
+// message events include many subtypes about topics, join/leave, files, etc.
+// https://api.slack.com/events/message#message_subtypes
+bot.message(function(msg) {
+  if (msg.subtype === undefined) {
+    onMessage(msg)
   }
 })
 
