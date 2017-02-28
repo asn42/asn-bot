@@ -50,7 +50,7 @@ function cmd_admins(arg) {
   )
 }
 commands.push({
-  cmd: cmd_admins,
+  func: cmd_admins,
   names: ['!admins', '!admin'],
   description: 'Lists admins.\n'
   + 'Options: `add`/`remove` + nick to add or remove an admin.'
@@ -81,7 +81,7 @@ function cmd_help(arg) {
   )
 }
 commands.push({
-  cmd: cmd_help,
+  func: cmd_help,
   names: ['!help', '!command', '!commands'],
   description: 'Lists commands. Add a command name for more specific help.'
 })
@@ -98,7 +98,7 @@ function cmd_time(arg) {
   )
 }
 commands.push({
-  cmd: cmd_time,
+  func: cmd_time,
   names: ['!time', '!date'],
   description: 'Prints the current date and time.'
 })
@@ -114,7 +114,7 @@ function cmd_announce(arg) {
   )
 }
 commands.push({
-  cmd: cmd_announce,
+  func: cmd_announce,
   names: ['!annonces', '!libre', '!lockpicking', '!secu'],
   description: 'Annoncement on the specified channel '
   + '(#annonces, #libre, #lockpicking or #secu) '
