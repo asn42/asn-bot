@@ -41,7 +41,7 @@ bot.channel_joined(function(msg) {
 // list admins
 function cmd_admins(arg) {
   var text = '<@' + arg.from + '>: ' +
-    admins.reduce((str, user) => {return str + '<@' + user.name + '>\n'}, '')
+    admins.map((admin) => {return '<@' + admin.name + '>'}).join('\n')
   slack.chat.postMessage(
     {token: token, as_user: true, channel: arg.in, text: text}, (err, data) => {
       if (data) { console.log(`cmd_admins from ${arg.from} to ${arg.in}`) }
