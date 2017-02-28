@@ -40,6 +40,9 @@ bot.channel_joined(function(msg) {
 
 // list admins
 function cmd_admins(arg) {
+  if (arg.from.isAdmin !== true) {
+    return
+  }
   var text = '<@' + arg.from.name + '>: ' +
     admins.map((admin) => {return '<@' + admin.name + '>'}).join('\n')
   slack.chat.postMessage(
@@ -58,6 +61,9 @@ commands.push({
 
 // list commands and print help messages
 function cmd_help(arg) {
+  if (arg.from.isAdmin !== true) {
+    return
+  }
   var text = '<@' + arg.from.name + '>: '
   if (arg.message === undefined) {
     text += commands.map((command) => {
@@ -88,6 +94,9 @@ commands.push({
 
 // tell time and date
 function cmd_time(arg) {
+  if (arg.from.isAdmin !== true) {
+    return
+  }
   var now = new Date()
   var text = `<@${arg.from.name}>: ${now.toDateString()} ${now.toTimeString()}`
   slack.chat.postMessage(
@@ -105,6 +114,9 @@ commands.push({
 
 // repeat with @channel
 function cmd_announce(arg) {
+  if (arg.from.isAdmin !== true) {
+    return
+  }
   var text = `<!channel>: ${arg.message}\n(<@${arg.from.name}>)`
   slack.chat.postMessage(
     {token: token, as_user: true, channel: arg.to, text: text}, (err, data) => {
@@ -123,32 +135,35 @@ commands.push({
 
 // commands
 function onMessage(msg) {
-  var from = admins.find((user) => {
-    return user.id === msg.user
-  })
-  if (from !== undefined) {
-    if (msg.text.startsWith('!admin')) {
-      cmd_admins({name: '!admin', from: {name: from.name}, in: msg.channel})
+  slack.users.info(
+    {token: token, user: msg.user}, (err, rawFrom) => {
+      if (rawFrom && rawFrom.user) {
+        if (rawFrom.user.name === 'asn') { return } // just in case
+        var from = {id: rawFrom.user.id, name: rawFrom.user.name}
+        var adm = admins.find((admin) => {return admin.id === rawFrom.user.id})
+        from.isAdmin = (adm !== undefined) ? true : false
+        from.isOverlord = (adm !== undefined) ? adm.overlord : false
+
+        commands.forEach((command) => {
+          command.names.forEach((name) => {
+            var matches = msg.text.match(
+              new RegExp('^(' + name + ')' + '(?: +(.+))?$')
+            )
+            if (matches !== null) {
+              command.func({
+                name: matches[1],
+                from: from,
+                in: msg.channel,
+                message: matches[2]
+              })
+            }
+          })
+        })
+
+      }
+      if (err) { console.log(err) }
     }
-    if (msg.text.startsWith('!command') || msg.text.startsWith('!help')) {
-      cmd_help({name: '!help', from: {name: from.name}, in: msg.channel})
-    }
-    if (msg.text.startsWith('!time') || msg.text.startsWith('!date')) {
-      cmd_time({name: '!time', from: {name: from.name}, in: msg.channel})
-    }
-    if (msg.text.startsWith('!secu ')) {
-      cmd_announce({name: '!secu', from: {name: from.name}, to: '#asn-secu', message: msg.text.slice(6)})
-    }
-    if (msg.text.startsWith('!lockpicking ')) {
-      cmd_announce({name: '!lockpicking', from: {name: from.name}, to: '#asn-lockpicking', message: msg.text.slice(13)})
-    }
-    if (msg.text.startsWith('!libre ')) {
-      cmd_announce({name: '!libre', from: {name: from.name}, to: '#asn-libre', message: msg.text.slice(7)})
-    }
-    if (msg.text.startsWith('!annonces ')) {
-      cmd_announce({name: '!annonces', from: {name: from.name}, to: '#annonces', message: msg.text.slice(6)})
-    }
-  }
+  )
 }
 
 // message events include many subtypes about topics, join/leave, files, etc.
