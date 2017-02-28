@@ -40,11 +40,11 @@ bot.channel_joined(function(msg) {
 
 // list admins
 function cmd_admins(arg) {
-  var text = '<@' + arg.from + '>: ' +
+  var text = '<@' + arg.from.name + '>: ' +
     admins.map((admin) => {return '<@' + admin.name + '>'}).join('\n')
   slack.chat.postMessage(
     {token: token, as_user: true, channel: arg.in, text: text}, (err, data) => {
-      if (data) { console.log(`cmd_admins from ${arg.from} to ${arg.in}`) }
+      if (data) { console.log(`cmd_admins from ${arg.from.name} to ${arg.in}`) }
       if (err) { console.log(err) }
     }
   )
@@ -58,7 +58,7 @@ commands.push({
 
 // list commands and print help messages
 function cmd_help(arg) {
-  var text = '<@' + arg.from + '>: '
+  var text = '<@' + arg.from.name + '>: '
   if (arg.message === undefined) {
     text += commands.map((command) => {
       return command.names.join(', ')
@@ -75,7 +75,7 @@ function cmd_help(arg) {
   }
   slack.chat.postMessage(
     {token: token, as_user: true, channel: arg.in, text: text}, (err, data) => {
-      if (data) { console.log(`cmd_help from ${arg.from} to ${arg.in}`) }
+      if (data) { console.log(`cmd_help from ${arg.from.name} to ${arg.in}`) }
       if (err) { console.log(err) }
     }
   )
@@ -89,10 +89,10 @@ commands.push({
 // tell time and date
 function cmd_time(arg) {
   var now = new Date()
-  var text = `<@${arg.from}>: ${now.toDateString()} ${now.toTimeString()}`
+  var text = `<@${arg.from.name}>: ${now.toDateString()} ${now.toTimeString()}`
   slack.chat.postMessage(
     {token: token, as_user: true, channel: arg.in, text: text}, (err, data) => {
-      if (data) { console.log(`cmd_time from ${arg.from} to ${arg.in}`) }
+      if (data) { console.log(`cmd_time from ${arg.from.name} to ${arg.in}`) }
       if (err) { console.log(err) }
     }
   )
@@ -105,7 +105,7 @@ commands.push({
 
 // repeat with @channel
 function cmd_announce(arg) {
-  var text = `<!channel>: ${arg.message}\n(<@${arg.from}>)`
+  var text = `<!channel>: ${arg.message}\n(<@${arg.from.name}>)`
   slack.chat.postMessage(
     {token: token, as_user: true, channel: arg.to, text: text}, (err, data) => {
       if (data) { console.log(`cmd_announce to ${arg.to}\n${text}`) }
@@ -128,25 +128,25 @@ bot.message(function(msg) {
   })
   if (from !== undefined) {
     if (msg.text.startsWith('!admin')) {
-      cmd_admins({name: '!admin', from: from.name, in: msg.channel})
+      cmd_admins({name: '!admin', from: {name: from.name}, in: msg.channel})
     }
     if (msg.text.startsWith('!command') || msg.text.startsWith('!help')) {
-      cmd_help({name: '!help', from: from.name, in: msg.channel})
+      cmd_help({name: '!help', from: {name: from.name}, in: msg.channel})
     }
     if (msg.text.startsWith('!time') || msg.text.startsWith('!date')) {
-      cmd_time({name: '!time', from: from.name, in: msg.channel})
+      cmd_time({name: '!time', from: {name: from.name}, in: msg.channel})
     }
     if (msg.text.startsWith('!secu ')) {
-      cmd_announce({name: '!secu', from: from.name, to: '#asn-secu', message: msg.text.slice(6)})
+      cmd_announce({name: '!secu', from: {name: from.name}, to: '#asn-secu', message: msg.text.slice(6)})
     }
     if (msg.text.startsWith('!lockpicking ')) {
-      cmd_announce({name: '!lockpicking', from: from.name, to: '#asn-lockpicking', message: msg.text.slice(13)})
+      cmd_announce({name: '!lockpicking', from: {name: from.name}, to: '#asn-lockpicking', message: msg.text.slice(13)})
     }
     if (msg.text.startsWith('!libre ')) {
-      cmd_announce({name: '!libre', from: from.name, to: '#asn-libre', message: msg.text.slice(7)})
+      cmd_announce({name: '!libre', from: {name: from.name}, to: '#asn-libre', message: msg.text.slice(7)})
     }
     if (msg.text.startsWith('!annonces ')) {
-      cmd_announce({name: '!annonces', from: from.name, to: '#annonces', message: msg.text.slice(6)})
+      cmd_announce({name: '!annonces', from: {name: from.name}, to: '#annonces', message: msg.text.slice(6)})
     }
   }
 })
