@@ -7,6 +7,8 @@ var admins = require('./admins')
 env(__dirname + '/.env')
 var token = process.env.SLACK_TOKEN
 
+var commands = []
+
 // auto rejoin
 bot.channel_left(function(msg) {
   var toJoin = channels.whitelist.find((chan) => {
@@ -47,6 +49,12 @@ function cmd_admins(arg) {
     }
   )
 }
+commands.push({
+  cmd: cmd_admins,
+  names: ['!admins', '!admin'],
+  description: 'Lists admins.\n'
+  + 'Options: `add`/`remove` + nick to add or remove an admin.'
+})
 
 // list commands
 function cmd_help(arg) {
@@ -65,6 +73,11 @@ function cmd_help(arg) {
     }
   )
 }
+commands.push({
+  cmd: cmd_help,
+  names: ['!help', '!command', '!commands'],
+  description: 'Lists commands. Add a command name for more specific help.'
+})
 
 // tell time and date
 function cmd_time(arg) {
@@ -77,6 +90,11 @@ function cmd_time(arg) {
     }
   )
 }
+commands.push({
+  cmd: cmd_time,
+  names: ['!time', '!date'],
+  description: 'Prints the current date and time.'
+})
 
 // repeat with @channel
 function cmd_announce(arg) {
@@ -88,6 +106,13 @@ function cmd_announce(arg) {
     }
   )
 }
+commands.push({
+  cmd: cmd_announce,
+  names: ['!annonces', '!libre', '!lockpicking', '!secu'],
+  description: 'Annoncement on the specified channel '
+  + '(#annonces, #libre, #lockpicking or #secu) '
+  + 'with your nick at the end of the message.'
+})
 
 // commands
 bot.message(function(msg) {
