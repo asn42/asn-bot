@@ -1,8 +1,9 @@
-var slack = require('slack')
-var bot = slack.rtm.client()
-var env = require('node-env-file')
-var channels = require('./channels')
-var admins = require('./admins')
+const fs = require('fs')
+const slack = require('slack')
+const bot = slack.rtm.client()
+const env = require('node-env-file')
+const channels = require('./channels')
+const admins = require('./admins')
 
 env(__dirname + '/.env')
 var token = process.env.SLACK_TOKEN
@@ -43,14 +44,61 @@ function cmd_admins(arg) {
   if (arg.from.isAdmin !== true) {
     return
   }
-  var text = '<@' + arg.from.name + '>: ' +
-    admins.map((admin) => {return '<@' + admin.name + '>'}).join('\n')
-  slack.chat.postMessage(
-    {token: token, as_user: true, channel: arg.in, text: text}, (err, data) => {
-      if (data) { console.log(`cmd_admins from ${arg.from.name} to ${arg.in}`) }
-      if (err) { console.log(err) }
+  if (arg.message === undefined) {
+    var text = '<@' + arg.from.name + '>: ' +
+      admins.map((admin) => {return '<@' + admin.name + '>'}).join('\n')
+    slack.chat.postMessage(
+      {token: token, as_user: true, channel: arg.in, text: text}, (err, data) => {
+        if (data) { console.log(`cmd_admins from ${arg.from.name} to ${arg.in}`) }
+        if (err) { console.log(err) }
+      }
+    )
+  } else {
+    var option = arg.message.match(/^(add|remove) ([^ ]+) *$/)
+    if (option !== null) {
+      if (option[1] === 'add' && arg.from.isOverlord === true) {
+        var action = (user) => {
+          var newAdmins = admins.slice()
+          newAdmins.push({id: user.id, overloard: false, name: user.name})
+          var adminsStr = 'var admins = '
+            + JSON.stringify(newAdmins, undefined, 2)
+            + '\n\nmodule.exports = admins'
+          fs.writeFileSync('./admins.js', adminsStr, 'utf8');
+        }
+      } else if (option[1] === 'remove' && arg.from.isOverlord === true) {
+        var action = (user) => {
+          var newAdmins = admins.filter((u) => {
+            return (u.id !== user.id && u.name !== user.name)
+              || u.overlord === true
+          })
+          var adminsStr = 'var admins = '
+            + JSON.stringify(newAdmins, undefined, 2)
+            + '\n\nmodule.exports = admins'
+          fs.writeFileSync('./admins.js', adminsStr, 'utf8');
+        }
+      }
+      if (option[2].search(/^<@U[A-Z0-9]{8}>$/) !== -1) {
+        slack.users.info(
+          {token: token, user: option[2].substr(2,9)}, (err, resp) => {
+            if (resp && resp.user) {
+              action(resp.user)
+            }
+            if (err) { console.log(err) }
+          })
+      } else {
+        slack.users.list(
+          {token: token}, (err, resp) => {
+            if (resp && resp.members) {
+              var user = resp.members.find((member) => {
+                return member.name === option[2]
+              })
+              action(user)
+            }
+            if (err) { console.log(err) }
+          })
+      }
     }
-  )
+  }
 }
 commands.push({
   func: cmd_admins,
