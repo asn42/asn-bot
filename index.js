@@ -162,13 +162,29 @@ commands.push({
 
 // repeat with @channel
 function cmd_announce(arg) {
-  if (arg.from.isAdmin !== true) {
+  if (arg.from.isAdmin !== true || arg.message == undefined) {
     return
   }
+  var to = {
+    '!annonces': '#annonces',
+    '!libre': '#asn-libre',
+    '!lockpicking': '#asn-lockpicking',
+    '!secu': '#asn-secu'
+  }[arg.name]
   var text = `<!channel>: ${arg.message}\n(<@${arg.from.name}>)`
   slack.chat.postMessage(
-    {token: token, as_user: true, channel: arg.to, text: text}, (err, data) => {
-      if (data) { console.log(`cmd_announce to ${arg.to}\n${text}`) }
+    {token: token, as_user: true, channel: to, text: text}, (err, data) => {
+      if (data) {
+        console.log(`cmd_announce to ${arg.to}${text}`)
+        slack.pins.add(
+          {token: token, channel: data.channel, timestamp: data.ts},
+          (err, resp) => {
+            if (resp) {
+              console.log(' (pinned it)\n')
+            }
+          }
+        )
+      }
       if (err) { console.log(err) }
     }
   )
