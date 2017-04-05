@@ -25,9 +25,9 @@ var admins = [
     "name": "sle-guil"
   },
   {
-    "id": "U459DCQLF",
+    "id": "U03PBDWGZ",
     "overloard": false,
-    "name": "kurgerbing_2"
+    "name": "kurgerbing"
   }
 ]
 
