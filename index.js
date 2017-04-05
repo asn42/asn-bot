@@ -63,7 +63,7 @@ function cmd_admins(arg) {
           var adminsStr = 'var admins = '
             + JSON.stringify(newAdmins, undefined, 2)
             + '\n\nmodule.exports = admins'
-          fs.writeFileSync('./admins.js', adminsStr, 'utf8');
+          fs.writeFileSync('./admins.js', adminsStr, 'utf8')
         }
       } else if (option[1] === 'remove' && arg.from.isOverlord === true) {
         var action = (user) => {
@@ -211,7 +211,9 @@ function onMessage(msg) {
         commands.forEach((command) => {
           command.names.forEach((name) => {
             var matches = msg.text.match(
-              new RegExp('^(' + name + ')' + '(?: +(.+))?$')
+              new RegExp('^(' +
+                name.replace(/[.?*+^$[\]\\(){}|-]/g, "\\$&") +
+                ')' + '(?: +(.+))?$')
             )
             if (matches !== null) {
               command.func({
