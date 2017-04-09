@@ -112,8 +112,9 @@ function cmd_help(arg) {
   if (arg.from.isAdmin !== true) {
     return
   }
-  var text = '<@' + arg.from.name + '>: '
+  var text = '<@' + arg.from.name + '>:\n'
   if (arg.message === undefined) {
+    text += 'usage: `!help [!command]`\n'
     text += commands.map((command) => {
       return command.names.join(', ')
     }).join('\n')
