@@ -6,9 +6,9 @@ const channels = require('./channels')
 const admins = require('./admins')
 
 env(__dirname + '/.env')
-var token = process.env.SLACK_TOKEN
+const token = process.env.SLACK_TOKEN
 
-var commands = []
+const commands = []
 
 // auto rejoin
 bot.channel_left(function(msg) {
