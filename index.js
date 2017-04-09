@@ -241,4 +241,26 @@ bot.message(function(msg) {
 })
 
 // start listening to the slack team associated to the token
-bot.listen({token:token})
+bot.listen({token:token}, () => {
+  bot.ws.on('message', (data, flags) => {
+    const msg = JSON.parse(data)
+
+    if (msg.type === 'pong') {
+      --msgId
+    }
+  })
+
+  let msgId = 0
+
+  bot.ws.on('open', () => {
+    setInterval(() => {
+      if (msgId > 0) {
+        console.log('uh oh! there are ' + msgId + ' unanswered pings!')
+      }
+      bot.ws.send(JSON.stringify({
+        id: ++msgId,
+        type: 'ping',
+      }))
+    }, 3600000)
+  })
+})
