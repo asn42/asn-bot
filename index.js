@@ -168,6 +168,7 @@ function cmd_announce(arg) {
   }
   var to = {
     '!annonces': '#annonces',
+    '!asso': '#asn-',
     '!libre': '#asn-libre',
     '!lockpicking': '#asn-lockpicking',
     '!secu': '#asn-secu'
@@ -192,9 +193,9 @@ function cmd_announce(arg) {
 }
 commands.push({
   func: cmd_announce,
-  names: ['!annonces', '!libre', '!lockpicking', '!secu'],
+  names: ['!annonces', '!asso', '!libre', '!lockpicking', '!secu'],
   description: 'Annoncement on the specified channel '
-  + '(#annonces, #asn-libre, #asn-lockpicking or #asn-secu) '
+  + '(#annonces, #asn-, #asn-libre, #asn-lockpicking or #asn-secu) '
   + 'with your nick at the end of the message.'
 })
 
