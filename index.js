@@ -177,7 +177,7 @@ function cmd_announce(arg) {
   slack.chat.postMessage(
     {token: token, as_user: true, channel: to, text: text}, (err, data) => {
       if (data) {
-        console.log(`cmd_announce to ${arg.to}${text}`)
+        console.log(`cmd_announce to ${to} | ${text}`)
         slack.pins.add(
           {token: token, channel: data.channel, timestamp: data.ts},
           (err, resp) => {
