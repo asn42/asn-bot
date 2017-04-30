@@ -8,6 +8,12 @@ const admins = require('./admins')
 env(__dirname + '/.env')
 const token = process.env.SLACK_TOKEN
 
+let lastTimeStamp
+
+bot.started(function(payload) {
+  lastTimeStamp = parseFloat(payload.latest_event_ts)
+})
+
 const commands = []
 
 // auto rejoin
@@ -237,6 +243,12 @@ function onMessage(msg) {
 // message events include many subtypes about topics, join/leave, files, etc.
 // https://api.slack.com/events/message#message_subtypes
 bot.message(function(msg) {
+  // Don't process the same message twice
+  if (lastTimeStamp && lastTimeStamp >= parseFloat(msg.ts)) {
+    return
+  } else {
+    lastTimeStamp = parseFloat(msg.ts)
+  }
   if (msg.subtype === undefined) {
     onMessage(msg)
   }
