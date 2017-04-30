@@ -214,7 +214,7 @@ function onMessage(msg) {
           command.names.forEach((name) => {
             var matches = msg.text.match(
               new RegExp('^(' +
-                name.replace(/[.?*+^$[\]\\(){}|-]/g, "\\$&") +
+                name.replace(/[\\^$.*+?()[\]{}|]/g, "\\$&") +
                 ')' + '(?: +(.+))?$')
             )
             if (matches !== null) {
