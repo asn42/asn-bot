@@ -202,7 +202,7 @@ function cmd_announce(arg) {
 commands.push({
   func: cmd_announce,
   names: ['!annonces', '!asso', '!libre', '!lockpicking', '!secu'],
-  description: 'Annoncement on the specified channel '
+  description: 'Announcement on the specified channel '
   + '(#annonces, #asn-, #asn-libre, #asn-lockpicking or #asn-secu) '
   + 'with your nick at the end of the message.'
 })
