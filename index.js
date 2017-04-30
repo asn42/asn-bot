@@ -9,9 +9,11 @@ env(__dirname + '/.env')
 const token = process.env.SLACK_TOKEN
 
 let lastTimeStamp
+let myId
 
 bot.started(function(payload) {
   lastTimeStamp = parseFloat(payload.latest_event_ts)
+  myId = payload.self.id
 })
 
 const commands = []
@@ -210,7 +212,7 @@ function onMessage(msg) {
   slack.users.info(
     {token: token, user: msg.user}, (err, rawFrom) => {
       if (rawFrom && rawFrom.user) {
-        if (rawFrom.user.name === 'asn') { return } // just in case
+        if (rawFrom.user.id === myId) { return } // just in case
         var from = {id: rawFrom.user.id, name: rawFrom.user.name}
         var adm = admins.find((admin) => {return admin.id === rawFrom.user.id})
         from.isAdmin = (adm !== undefined) ? true : false
