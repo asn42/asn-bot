@@ -240,6 +240,9 @@ function onMessage(msg) {
   })
 }
 
+function onEdit(msg) {
+}
+
 // message events include many subtypes about topics, join/leave, files, etc.
 // https://api.slack.com/events/message#message_subtypes
 bot.message(function(msg) {
@@ -251,6 +254,9 @@ bot.message(function(msg) {
   }
   if (msg.subtype === undefined) {
     onMessage(msg)
+  }
+  if (msg.subtype === 'message_changed') {
+    onEdit(msg)
   }
 })
 
