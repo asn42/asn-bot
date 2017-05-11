@@ -20,7 +20,7 @@ const commands = []
 
 // auto rejoin
 bot.channel_left(function(msg) {
-  var toJoin = channels.whitelist.find((chan) => {
+  const toJoin = channels.whitelist.find((chan) => {
     return chan.id === msg.channel && chan.always
   })
   if (toJoin !== undefined) {
@@ -53,7 +53,7 @@ function cmd_admins(arg) {
     return
   }
   if (arg.message === undefined) {
-    var text = '<@' + arg.from.name + '>: ' +
+    const text = '<@' + arg.from.name + '>: ' +
       admins.map((admin) => {return '<@' + admin.name + '>'}).join('\n')
     slack.chat.postMessage(
       {token: token, as_user: true, channel: arg.in, text: text}, (err, data) => {
@@ -62,24 +62,24 @@ function cmd_admins(arg) {
       }
     )
   } else {
-    var option = arg.message.match(/^(add|remove) ([^ ]+) *$/)
+    const option = arg.message.match(/^(add|remove) ([^ ]+) *$/)
     if (option !== null) {
       if (option[1] === 'add' && arg.from.isOverlord === true) {
-        var action = (user) => {
-          var newAdmins = admins.slice()
+        const action = (user) => {
+          const newAdmins = admins.slice()
           newAdmins.push({id: user.id, overloard: false, name: user.name})
-          var adminsStr = 'var admins = '
+          const adminsStr = 'const admins = '
             + JSON.stringify(newAdmins, undefined, 2)
             + '\n\nmodule.exports = admins'
           fs.writeFileSync('./admins.js', adminsStr, 'utf8')
         }
       } else if (option[1] === 'remove' && arg.from.isOverlord === true) {
-        var action = (user) => {
-          var newAdmins = admins.filter((u) => {
+        const action = (user) => {
+          const newAdmins = admins.filter((u) => {
             return (u.id !== user.id && u.name !== user.name)
               || u.overlord === true
           })
-          var adminsStr = 'var admins = '
+          const adminsStr = 'const admins = '
             + JSON.stringify(newAdmins, undefined, 2)
             + '\n\nmodule.exports = admins'
           fs.writeFileSync('./admins.js', adminsStr, 'utf8');
@@ -97,7 +97,7 @@ function cmd_admins(arg) {
         slack.users.list(
           {token: token}, (err, resp) => {
             if (resp && resp.members) {
-              var user = resp.members.find((member) => {
+              const user = resp.members.find((member) => {
                 return member.name === option[2]
               })
               action(user)
@@ -120,14 +120,14 @@ function cmd_help(arg) {
   if (arg.from.isAdmin !== true) {
     return
   }
-  var text = '<@' + arg.from.name + '>:\n'
+  let text = '<@' + arg.from.name + '>:\n'
   if (arg.message === undefined) {
     text += 'usage: `!help [!command]`\n'
     text += commands.map((command) => {
       return command.names.join(', ')
     }).join('\n')
   } else {
-    var cmd = commands.find((command) => {
+    const cmd = commands.find((command) => {
       return command.names.includes(arg.message)
     })
     if (cmd !== undefined) {
@@ -154,8 +154,8 @@ function cmd_time(arg) {
   if (arg.from.isAdmin !== true) {
     return
   }
-  var now = new Date()
-  var text = `<@${arg.from.name}>: ${now.toDateString()} ${now.toTimeString()}`
+  const now = new Date()
+  const text = `<@${arg.from.name}>: ${now.toDateString()} ${now.toTimeString()}`
   slack.chat.postMessage(
     {token: token, as_user: true, channel: arg.in, text: text}, (err, data) => {
       if (data) { console.log(`cmd_time from ${arg.from.name} to ${arg.in}`) }
@@ -174,14 +174,14 @@ function cmd_announce(arg) {
   if (arg.from.isAdmin !== true || arg.message == undefined) {
     return
   }
-  var to = {
+  const to = {
     '!annonces': '#annonces',
     '!asso': '#asn-',
     '!libre': '#asn-libre',
     '!lockpicking': '#asn-lockpicking',
     '!secu': '#asn-secu'
   }[arg.name]
-  var text = `<!channel>: ${arg.message}\n(<@${arg.from.name}>)`
+  const text = `<!channel>: ${arg.message}\n(<@${arg.from.name}>)`
   slack.chat.postMessage(
     {token: token, as_user: true, channel: to, text: text}, (err, data) => {
       if (data) {
@@ -213,14 +213,14 @@ function onMessage(msg) {
     {token: token, user: msg.user}, (err, rawFrom) => {
       if (rawFrom && rawFrom.user) {
         if (rawFrom.user.id === myId) { return } // just in case
-        var from = {id: rawFrom.user.id, name: rawFrom.user.name}
-        var adm = admins.find((admin) => {return admin.id === rawFrom.user.id})
+        const from = {id: rawFrom.user.id, name: rawFrom.user.name}
+        const adm = admins.find((admin) => {return admin.id === rawFrom.user.id})
         from.isAdmin = (adm !== undefined) ? true : false
         from.isOverlord = (adm !== undefined) ? adm.overlord : false
 
         commands.forEach((command) => {
           command.names.forEach((name) => {
-            var matches = msg.text.match(
+            const matches = msg.text.match(
               new RegExp('^(' +
                 name.replace(/[\\^$.*+?()[\]{}|]/g, "\\$&") +
                 ')' + '(?: +(.+))?$')
