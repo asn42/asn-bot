@@ -209,37 +209,35 @@ commands.push({
 
 // commands
 function onMessage(msg) {
-  slack.users.info(
-    {token: token, user: msg.user}, (err, rawFrom) => {
-      if (rawFrom && rawFrom.user) {
-        if (rawFrom.user.id === myId) { return } // just in case
-        const from = {id: rawFrom.user.id, name: rawFrom.user.name}
-        const adm = admins.find((admin) => {return admin.id === rawFrom.user.id})
-        from.isAdmin = (adm !== undefined) ? true : false
-        from.isOverlord = (adm !== undefined) ? adm.overlord : false
+  slack.users.info({token: token, user: msg.user}, (err, rawFrom) => {
+    if (err) { console.log(err) }
+    if (rawFrom && rawFrom.user) {
+      if (rawFrom.user.id === myId) { return } // just in case
+      const from = {id: rawFrom.user.id, name: rawFrom.user.name}
+      const adm = admins.find((admin) => {return admin.id === rawFrom.user.id})
+      from.isAdmin = (adm !== undefined) ? true : false
+      from.isOverlord = (adm !== undefined) ? adm.overlord : false
 
-        commands.forEach((command) => {
-          command.names.forEach((name) => {
-            const matches = msg.text.match(
-              new RegExp('^(' +
-                name.replace(/[\\^$.*+?()[\]{}|]/g, "\\$&") +
-                ')' + '(?: +(.+))?$')
-            )
-            if (matches !== null) {
-              command.func({
-                name: matches[1],
-                from: from,
-                in: msg.channel,
-                message: matches[2]
-              })
-            }
-          })
+      const matches = msg.text.match(/^(![a-z]+)(\s+|$)/)
+      if (matches !== null) {
+        const command = commands.find((command) => {
+          return command.names.includes(matches[1])
         })
-
+        if (command !== undefined) {
+          const name = command.names.find((name) => {return name === matches[1]})
+          if (name !== undefined) {
+            command.func({
+              name: matches[1],
+              ts: msg.ts,
+              from: from,
+              in: msg.channel,
+              message: msg.text.substr(matches[0].length)
+            })
+          }
+        }
       }
-      if (err) { console.log(err) }
     }
-  )
+  })
 }
 
 // message events include many subtypes about topics, join/leave, files, etc.
