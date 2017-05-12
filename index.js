@@ -52,7 +52,7 @@ function cmd_admins(arg) {
   if (arg.from.isAdmin !== true) {
     return
   }
-  if (arg.message === undefined) {
+  if (arg.message === '') {
     const text = '<@' + arg.from.name + '>: ' +
       admins.map((admin) => {return '<@' + admin.name + '>'}).join('\n')
     slack.chat.postMessage(
@@ -121,7 +121,7 @@ function cmd_help(arg) {
     return
   }
   let text = '<@' + arg.from.name + '>:\n'
-  if (arg.message === undefined) {
+  if (arg.message === '') {
     text += 'usage: `!help [!command]`\n'
     text += commands.map((command) => {
       return command.names.join(', ')
@@ -171,7 +171,7 @@ commands.push({
 
 // repeat with @channel
 function cmd_announce(arg) {
-  if (arg.from.isAdmin !== true || arg.message == undefined) {
+  if (arg.from.isAdmin !== true || arg.message == '') {
     return
   }
   const to = {
