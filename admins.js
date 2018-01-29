@@ -1,4 +1,4 @@
-var admins = [
+const admins = [
   {
     "id": "U0GQXP468",
     "overlord": true,
@@ -10,24 +10,19 @@ var admins = [
     "name": "dbourdon"
   },
   {
-    "id": "U2JEH63RB",
+    "id": "U2ACGNRPH",
     "overlord": false,
-    "name": "lbenamer"
+    "name": "lbopp"
   },
   {
-    "id": "U0BS3SQAC",
-    "overlord": false,
-    "name": "tet"
-  },
-  {
-    "id": "U047JPZG0",
-    "overlord": false,
-    "name": "sle-guil"
-  },
-  {
-    "id": "U03PBDWGZ",
+    "id": "U2XT38KUK",
     "overloard": false,
-    "name": "kurgerbing"
+    "name": "vmercadi"
+  },
+  {
+    "id": "U04GLEZRE",
+    "overlord": false,
+    "name": "nidzik"
   }
 ]
 
