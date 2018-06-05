@@ -203,7 +203,8 @@ function cmd_announce(arg) {
     '!asso': '#asn-',
     '!libre': '#asn-libre',
     '!lockpicking': '#asn-lockpicking',
-    '!secu': '#asn-secu'
+    '!secu': '#asn-secu',
+    '!event': '#42staff_events'
   }[arg.name]
   const text = `<!channel>: ${arg.message}\n(<@${arg.from.name}>)`
   slack.chat.postMessage(
@@ -225,10 +226,10 @@ function cmd_announce(arg) {
 }
 commands.push({
   func: cmd_announce,
-  names: ['!annonces', '!asso', '!libre', '!lockpicking', '!secu'],
+  names: ['!annonces', '!asso', '!libre', '!lockpicking', '!secu', '!event'],
   description: 'Announcement on the specified channel '
-  + '(#annonces, #asn-, #asn-libre, #asn-lockpicking or #asn-secu) '
-  + 'with your nick at the end of the message.'
+  + '(#annonces, #asn-, #asn-libre, #asn-lockpicking, #asn-secu or '
+  + '#42staff_events) with your nick at the end of the message.'
 })
 
 // commands
