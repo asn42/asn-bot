@@ -6,6 +6,7 @@ channels.whitelist = [
   {id: 'C3T7LJB1S', always: true,  name: 'asn-libre'},
   {id: 'C3SDZFG8Y', always: true,  name: 'asn-lockpicking'},
   {id: 'C3SES169F', always: true,  name: 'asn-secu'},
+  {id: 'CAW4XU70T', always: true,  name: '42staff_events'},
   {id: 'C3QG85SG6', always: false, name: 'general'}
 ]
 
