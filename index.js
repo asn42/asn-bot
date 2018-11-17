@@ -200,7 +200,7 @@ function cmd_announce(arg) {
   }
   const to = {
     '!annonces': '#annonces',
-    '!asso': '#asn-',
+    '!asso': '#association-sans-nom',
     '!libre': '#asn-libre',
     '!lockpicking': '#asn-lockpicking',
     '!secu': '#asn-secu',
@@ -228,7 +228,7 @@ commands.push({
   func: cmd_announce,
   names: ['!annonces', '!asso', '!libre', '!lockpicking', '!secu', '!event'],
   description: 'Announcement on the specified channel '
-  + '(#annonces, #asn-, #asn-libre, #asn-lockpicking, #asn-secu or '
+  + '(#annonces, #association-sans-nom, #asn-libre, #asn-lockpicking, #asn-secu or '
   + '#42staff_events) with your nick at the end of the message.'
 })
 
