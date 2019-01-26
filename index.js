@@ -105,29 +105,29 @@ function cmd_admins(arg) {
             + JSON.stringify(newAdmins, undefined, 2)
             + '\n\nmodule.exports = admins'
           fs.writeFileSync('./admins.js', adminsStr, 'utf8');
-          // Duplicate code start
-          if (option[2].search(/^<@U[A-Z0-9]{8}>$/) !== -1) {
-            slack.users.info(
-              {token: token, user: option[2].substr(2,9)}, (err, resp) => {
-                if (resp && resp.user) {
-                  action(resp.user)
-                }
-                if (err) { console.log(err) }
-              })
-          } else {
-            slack.users.list(
-              {token: token}, (err, resp) => {
-                if (resp && resp.members) {
-                  const user = resp.members.find((member) => {
-                    return member.name === option[2]
-                  })
-                  action(user)
-                }
-                if (err) { console.log(err) }
-              })
-          }
-          // Duplicate code end
         }
+        // Duplicate code start
+        if (option[2].search(/^<@U[A-Z0-9]{8}>$/) !== -1) {
+          slack.users.info(
+            {token: token, user: option[2].substr(2,9)}, (err, resp) => {
+              if (resp && resp.user) {
+                action(resp.user)
+              }
+              if (err) { console.log(err) }
+            })
+        } else {
+          slack.users.list(
+            {token: token}, (err, resp) => {
+              if (resp && resp.members) {
+                const user = resp.members.find((member) => {
+                  return member.name === option[2]
+                })
+                action(user)
+              }
+              if (err) { console.log(err) }
+            })
+        }
+        // Duplicate code end
       }
     }
   }
