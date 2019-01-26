@@ -66,7 +66,9 @@ function cmd_admins(arg) {
     if (option !== null) {
       if (option[1] === 'add' && arg.from.isOverlord === true) {
         const action = (user) => {
-          const newAdmins = admins.slice()
+          const newAdmins = admins.filter((u) => {
+            return u.id !== user.id || u.overlord === true
+          })
           newAdmins.push({id: user.id, overloard: false, name: user.name})
           const adminsStr = 'const admins = '
             + JSON.stringify(newAdmins, undefined, 2)
@@ -98,8 +100,7 @@ function cmd_admins(arg) {
       } else if (option[1] === 'remove' && arg.from.isOverlord === true) {
         const action = (user) => {
           const newAdmins = admins.filter((u) => {
-            return (u.id !== user.id && u.name !== user.name)
-              || u.overlord === true
+            return u.id !== user.id || u.overlord === true
           })
           const adminsStr = 'const admins = '
             + JSON.stringify(newAdmins, undefined, 2)
